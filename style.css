@@ -1,0 +1,12 @@
+body{
+    background-color: aqua;
+}
+
+h1{
+    text-align: center;
+}
+
+#mycanva{
+    border: 1px solid black;
+    background-color: black;
+}
