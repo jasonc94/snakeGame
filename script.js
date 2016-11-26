@@ -4,6 +4,9 @@ var width = 15;
 var direction;
 var snake = [];
 var food = new Food(20,20);
+var pause = false;
+var score = 0;
+var speed = 500;
 
 
 
@@ -76,6 +79,7 @@ function drawSnake(){
 document.onkeydown = function(e){
     var key = e.keyCode;
     //left -1, right 1, top 2, down -2
+    //alert(key);
     switch(key){
         case 37: 
             direction = -1;
@@ -88,6 +92,12 @@ document.onkeydown = function(e){
             break;
         case 40:
             direction = -2;
+            break;
+        case 80:
+            if(pause == false)
+                pause = true;
+            else
+                pause = false;
             break;
         default:
             direction = 0;
@@ -122,7 +132,7 @@ function move(dir){
         default:
             break;
     }
-    if(dir!=0){
+    if(dir!=0 && !pause){
         snake = tempSnake;
     }
     drawAll();
@@ -132,6 +142,8 @@ function move(dir){
 
 //draw all
 function drawAll(){
+    $('#score').html(score);
+    $('#speed').html(Math.round(1000/speed*100)/100 + "c/s");
     cxt.clearRect(0,0,600,600);
     createGrid();
     drawSnake();
@@ -139,13 +151,16 @@ function drawAll(){
     
     //if ate food generate a new one
     if(head.x == food.x && head.y == food.y){
+        score++;
+        if(speed > 50)
+            speed-=30;
         generateFood();
         appendNewCell(head.x,head.y,head.dir);
     }
     
     //draw food
     drawFood();
-    gameOverCheck();
+    //gameOverCheck();
 
     
 }
@@ -204,5 +219,15 @@ function hitWall(){
     if(head.x<0 || head.x>39 || head.y<0 || head.y>39)
         return true;
 }
+
+function moveClock(){
+    var head = snake[snake.length-1];
+    move(head.dir);
+    setTimeout(moveClock(),500);   
+}
+
+moveClock();
 drawAll();
+
+
 
