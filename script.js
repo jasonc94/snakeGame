@@ -160,7 +160,7 @@ function drawAll(){
     
     //draw food
     drawFood();
-    //gameOverCheck();
+    gameOverCheck();
 
     
 }
@@ -223,7 +223,7 @@ function hitWall(){
 function moveClock(){
     var head = snake[snake.length-1];
     move(head.dir);
-    setTimeout(moveClock(),500);   
+    setTimeout(moveClock,speed);   
 }
 
 moveClock();
