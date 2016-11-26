@@ -145,6 +145,9 @@ function drawAll(){
     
     //draw food
     drawFood();
+    gameOverCheck();
+
+    
 }
 
 //generate food at random
@@ -180,5 +183,26 @@ function appendNewCell(x,y,dir){
     drawAll();
 }
 
+function gameOverCheck(){
+   if(ateSelf() || hitWall()){
+       alert("Game Over!");
+        location.reload();  
+   } 
+}
+
+function ateSelf(){
+    var head = snake[snake.length-1];
+    for(var i = 0; i < snake.length-1; i++){
+        if(head.x == snake[i].x && head.y == snake[i].y){
+            return true;
+        }
+    }
+}
+
+function hitWall(){
+    var head = snake[snake.length-1];
+    if(head.x<0 || head.x>39 || head.y<0 || head.y>39)
+        return true;
+}
 drawAll();
 
