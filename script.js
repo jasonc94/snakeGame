@@ -7,7 +7,8 @@ var food = new Food(20,20);
 var pause = false;
 var score = 0;
 var speed = 500;
-
+var maxScore = 0;
+var op = false;
 
 
 //create snake cell
@@ -99,11 +100,27 @@ document.onkeydown = function(e){
             else
                 pause = false;
             break;
+        case 88:
+            speed-=30;
+            break;
+        case 89:
+            speed+=30;
+            break;
+        case 32:
+            if(!op)
+                op = true;
+            else
+                op = false;
+            break;
         default:
             direction = 0;
             break;
     }
-    move(direction);
+    var head = snake[snake.length-1];
+    //cannot go back 180 degrees
+    if((head.dir+direction)!=0){
+        move(direction);
+    }
 }
 
 //move snake
@@ -145,12 +162,13 @@ function drawAll(){
     $('#score').html(score);
     $('#speed').html(Math.round(1000/speed*100)/100 + "c/s");
     cxt.clearRect(0,0,600,600);
-    createGrid();
+    //createGrid();
     drawSnake();
     var head = snake[snake.length-1];
     
     //if ate food generate a new one
     if(head.x == food.x && head.y == food.y){
+        document.getElementById('scoreSound').play();
         score++;
         if(speed > 50)
             speed-=30;
@@ -160,20 +178,24 @@ function drawAll(){
     
     //draw food
     drawFood();
-    gameOverCheck();
-
-    
+    //op is cheat code xD enable by space
+    if(!op)
+        gameOverCheck();
 }
 
 //generate food at random
 function generateFood(){
+    var flag = false;
     var foodX = Math.ceil(Math.random()*39);
     var foodY = Math.ceil(Math.random()*39);
     for(var i = 0; i < snake.length; i++){
-        if(foodX == snake[i].x && foodY == snake[i].y)
+        if(foodX == snake[i].x && foodY == snake[i].y){
             generateFood();
+            flag = true;
+        }
     }
-    food = new Food(foodX,foodY);
+    if(!flag)
+        food = new Food(foodX,foodY);
 }
 
 function appendNewCell(x,y,dir){
@@ -212,6 +234,7 @@ function ateSelf(){
             return true;
         }
     }
+    
 }
 
 function hitWall(){
@@ -227,7 +250,7 @@ function moveClock(){
 }
 
 moveClock();
-drawAll();
-
+document.getElementById('bg').loop = true;
+document.getElementById('bg').play();
 
 
